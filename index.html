@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en"><head><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-1CQ4D3VQ3L"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-1CQ4D3VQ3L');
+  </script>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+
+<title>Silent Liquidity: Advanced Fluid Visualizer</title>
+
+<meta name="description" content="A high-end physically-simulated fluid distortion studio. Customize optics, physics, and surface textures to create and export 4K liquid wallpapers.">
+<meta name="keywords" content="Fluid Simulation, WebGL, Wallpaper Creator, Generative Art, Physics Simulation, Interactive Visualizer, Three.js, Liquid Effect, Creative Tool">
+<meta name="author" content="Chris Pirillo">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0f172a">
+
+<meta property="og:site_name" content="Chris Pirillo's Arcade">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Silent Liquidity: Advanced Fluid Visualizer">
+<meta property="og:description" content="A high-end physically-simulated fluid distortion studio. Customize optics, physics, and surface textures to create and export 4K liquid wallpapers.">
+<meta property="og:url" content="https://pirillo.com/arcade/silent-liquidity.html">
+<meta property="og:image" content="https://pirillo.com/arcade/images/silent-liquidity.png">
+<meta property="og:image:alt" content="Silent Liquidity: Advanced Fluid Visualizer">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ChrisPirillo">
+<meta name="twitter:creator" content="@ ChrisPirillo">
+<meta name="twitter:title" content="Silent Liquidity: Advanced Fluid Visualizer">
+<meta name="twitter:description" content="A high-end physically-simulated fluid distortion studio. Customize optics, physics, and surface textures to create and export 4K liquid wallpapers.">
+<meta name="twitter:image" content="https://pirillo.com/arcade/images/silent-liquidity.png">
+<meta name="twitter:domain" content="pirillo.com">
+
+<link rel="canonical" href="https://pirillo.com/arcade/silent-liquidity.html">
+
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Silent Liquidity: Advanced Fluid Visualizer",
+  "description": "A high-end physically-simulated fluid distortion studio. Customize optics, physics, and surface textures to create and export 4K liquid wallpapers.",
+  "keywords": "Fluid Simulation, WebGL, Wallpaper Creator, Generative Art, Physics Simulation, Interactive Visualizer, Three.js, Liquid Effect, Creative Tool",
+  "url": "https://pirillo.com/arcade/silent-liquidity.html",
+  "image": "https://pirillo.com/arcade/images/silent-liquidity.png",
+  "primaryImageOfPage": {
+    "@type": "ImageObject",
+    "url": "https://pirillo.com/arcade/images/silent-liquidity.png"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Chris Pirillo",
+    "url": "https://pirillo.com",
+    "sameAs": [
+      "https://x.com/ChrisPirillo"
+    ]
+  },
+  "mainEntity": {
+    "name": "Silent Liquidity: Advanced Fluid Visualizer",
+    "description": "A high-end physically-simulated fluid distortion studio. Customize optics, physics, and surface textures to create and export 4K liquid wallpapers.",
+    "image": "https://pirillo.com/arcade/images/silent-liquidity.png",
+    "operatingSystem": "Web Browser",
+    "author": {
+      "@type": "Person",
+      "name": "Chris Pirillo"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock"
+    },
+    "@type": "WebApplication",
+    "applicationCategory": "Art & Design"
+  }
+}</script>
+
+<meta charset="UTF-8">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap'); *{box-sizing:border-box}
+body, html{font-family:'Inter',-apple-system,sans-serif;margin:0;padding:0;overflow:hidden;background:#000;user-select:none;-webkit-user-select:none;width:100%;height:100%}
+#liquid-canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:1}
+.glass-panel{background:rgba(255,255,255,0.32);backdrop-filter:blur(48px) saturate(220%) brightness(1.02);-webkit-backdrop-filter:blur(48px) saturate(220%) brightness(1.02)}
+#panel{position:fixed;top:0;right:0;height:100%;width:100%;max-width:360px;z-index:50;display:flex;flex-direction:column;border-left:1px solid rgba(255,255,255,0.28);box-shadow:-18px 0 50px rgba(0,0,0,0.18);transform:translateX(110%);transition:transform 0.5s cubic-bezier(0.16,1,0.3,1)}
+#panel.open{transform:translateX(0)}
+@media(max-width:639px){ #panel{top:0;bottom:auto;right:0;left:0;height:50vh;width:100%;max-width:100%;border-left:none;border-bottom:1px solid rgba(255,255,255,0.28);box-shadow:0 18px 50px rgba(0,0,0,0.18);border-radius:0 0 22px 22px;transform:translateY(-110%)}
+#panel.open{transform:translateY(0)}
+}
+.fo{pointer-events:none;background:#000;opacity:0;transition:opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);z-index:100}
+.fo.active{opacity:1;pointer-events:auto}
+#liquid-canvas.blocked{pointer-events:none}
+@keyframes loading-slide { 0% { transform: translateX(-100%); }
+50% { transform: translateX(0%); }
+100% { transform: translateX(100%); }
+}
+.loader-bar { width: 140px; height: 1.5px; background: rgba(255,255,255,0.15); overflow: hidden; position: relative; border-radius: 4px; }
+.loader-progress { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; animation: loading-slide 1.2s infinite ease-in-out; }
+.acc-wrap{border:1px solid rgba(255,255,255,0.18);border-radius:13px;margin-bottom:7px;overflow:hidden}
+.acc-hd{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:9px 12px;transition:background 0.12s}
+.acc-hd:hover{background:rgba(255,255,255,0.15)}
+.acc-hd.open{background:rgba(255,255,255,0.1);border-radius:13px 13px 0 0}
+.acc-body{display:none;padding:9px 12px 12px;background:rgba(255,255,255,0.06);border-radius:0 0 13px 13px;border-top:1px solid rgba(255,255,255,0.1)}
+.acc-body.open{display:block}
+.acc-arr{transition:transform 0.22s;flex-shrink:0}
+.acc-hd.open .acc-arr{transform:rotate(180deg)}
+.sr{display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.sr:last-child{margin-bottom:0}
+.sr .sl{font-size:8px;font-weight:800;color:rgba(0,0,0,0.4);text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap;flex-shrink:0;width:80px}
+.sr input[type="range"]{flex:1;min-width:0}
+.sr .vb{flex-shrink:0;width:36px;text-align:right}
+.cr{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.cr:last-child{margin-bottom:0}
+.xr{margin-bottom:9px}
+.xr:last-child{margin-bottom:0}
+input[type="range"]{-webkit-appearance:none;width:100%;height:4px;background:rgba(0,0,0,0.13);border-radius:10px;outline:none;cursor:pointer}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:#000;border-radius:50%;cursor:pointer;border:2.5px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.2)}
+.cs::-webkit-scrollbar{width:4px}
+.cs::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.1);border-radius:10px}
+#info-modal{display:none;backdrop-filter:blur(20px) brightness(1.1)}
+#info-modal.active{display:flex}
+.gc{background:rgba(255,255,255,0.72);backdrop-filter:blur(40px) saturate(200%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 30px 60px -12px rgba(0,0,0,0.15)}
+.btn-g{background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.22);transition:all 0.14s}
+.btn-g:hover{background:rgba(255,255,255,0.24)}
+.lbl{font-size:8.5px;font-weight:800;color:rgba(0,0,0,0.4);text-transform:uppercase;letter-spacing:0.09em}
+.sec{font-size:8.5px;font-weight:900;color:rgba(0,0,0,0.52);text-transform:uppercase;letter-spacing:0.17em}
+.vb{font-size:8.5px;font-weight:900;color:#000;background:rgba(255,255,255,0.86);padding:1px 5px;border-radius:4px;font-variant-numeric:tabular-nums}</style>
+</head>
+<body><h1 style="display: none;">Silent Liquidity: Advanced Fluid Visualizer</h1>
+<canvas id="liquid-canvas"></canvas>
+
+<div id="fo" class="fo fixed inset-0 active flex items-center justify-center">
+  <div id="loading-ui" class="flex flex-col items-center gap-4">
+    <div class="text-white/80 text-[10px] font-black tracking-[0.3em] uppercase">Loading</div>
+    <div class="loader-bar"><div class="loader-progress"></div></div>
+  </div>
+</div>
+
+<button id="menu-toggle" class="fixed top-6 right-6 z-50 p-3 bg-white/30 backdrop-blur-xl rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all border border-white/30">
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+</button>
+
+<aside id="panel" class="glass-panel">
+  <header class="px-5 py-4 flex items-center justify-between border-b border-black/5 shrink-0">
+    <div class="flex items-center gap-2.5">
+      <h2 class="text-[15px] font-black text-black tracking-tighter uppercase">Silent Liquidity</h2>
+      <button id="info-trigger" class="text-black/25 hover:text-black transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" x2="12.01" y1="17" y2="17"></line></svg>
+      </button>
+    </div>
+    <button id="menu-close" class="p-1.5 hover:bg-black/5 rounded-lg transition-all active:scale-90">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+    </button>
+  </header>
+
+  <div class="flex-1 overflow-y-auto cs px-3 py-3">
+    <div class="acc-wrap">
+      <div class="acc-hd open" data-acc="canvas"><span class="sec">Canvas</span><svg class="acc-arr" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"></path></svg></div>
+      <div class="acc-body open" id="acc-canvas">
+        <div class="xr"><p class="lbl mb-1">Display Text</p><input type="text" id="i-text" class="w-full bg-white/30 p-2 border border-white/50 rounded-xl outline-none font-black text-sm tracking-tight" value="Liquid,Effect"></div>
+        <div class="xr"><p class="lbl mb-1">Text Color</p><input type="color" id="i-textColor" class="w-full h-8 rounded-lg border-none bg-white/20 p-1 cursor-pointer" value="#1d1d1f"></div>
+        <div class="cr"><span class="lbl">Gradient</span><input type="checkbox" id="i-gradientEnabled" checked="" class="w-4 h-4 accent-black cursor-pointer"></div>
+        <div class="grid grid-cols-2 gap-2 mb-2">
+          <div><p class="lbl mb-1">Color A</p><input type="color" id="i-backgroundColor" class="w-full h-8 rounded-lg border-none bg-white/20 p-1 cursor-pointer" value="#fafafa"></div>
+          <div id="gc-b"><p class="lbl mb-1">Color B</p><input type="color" id="i-backgroundColor2" class="w-full h-8 rounded-lg border-none bg-white/20 p-1 cursor-pointer" value="#cbd5e1"></div>
+        </div>
+        <div id="gc-angle" class="sr"><span class="sl">Angle</span><input type="range" id="i-gradientAngle" min="0" max="360" step="1" value="135"><span id="v-gradientAngle" class="vb">135°</span></div>
+        <div class="cr"><span class="lbl">Rain</span><input type="checkbox" id="i-rain" class="w-4 h-4 accent-black cursor-pointer"></div>
+      </div>
+    </div>
+
+    <div class="acc-wrap">
+      <div class="acc-hd open" data-acc="wave"><span class="sec">Wave Physics</span><svg class="acc-arr" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"></path></svg></div>
+      <div class="acc-body open" id="acc-wave">
+        <div class="sr"><span class="sl">Depth</span><input type="range" id="i-displacementScale" min="0" max="80" step="0.5" value="2"><span id="v-displacementScale" class="vb">2.00</span></div>
+        <div class="sr"><span class="sl">Complexity</span><input type="range" id="i-viscosity" min="0.01" max="12" step="0.05" value="0.5"><span id="v-viscosity" class="vb">0.50</span></div>
+        <div class="sr"><span class="sl">Flow Speed</span><input type="range" id="i-speed" min="0" max="20" step="0.1" value="1"><span id="v-speed" class="vb">1.00</span></div>
+      </div>
+    </div>
+
+    <div class="acc-wrap">
+      <div class="acc-hd open" data-acc="optics"><span class="sec">Optics</span><svg class="acc-arr" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"></path></svg></div>
+      <div class="acc-body open" id="acc-optics">
+        <div class="sr"><span class="sl">Refraction</span><input type="range" id="i-refraction" min="0" max="15" step="0.05" value="0.5"><span id="v-refraction" class="vb">0.50</span></div>
+        <div class="sr"><span class="sl">Aberration</span><input type="range" id="i-chromaticAberration" min="0" max="1.5" step="0.005" value="0.05"><span id="v-chromaticAberration" class="vb">0.05</span></div>
+        <div class="sr"><span class="sl">Fresnel</span><input type="range" id="i-fresnelPower" min="0.1" max="20" step="0.1" value="2"><span id="v-fresnelPower" class="vb">2.00</span></div>
+        <div class="sr"><span class="sl">IOR</span><input type="range" id="i-ior" min="1.0" max="2.5" step="0.01" value="1.33"><span id="v-ior" class="vb">1.33</span></div>
+        <div class="sr"><span class="sl">Transmission</span><input type="range" id="i-transmission" min="0" max="1" step="0.01" value="0"><span id="v-transmission" class="vb">0.00</span></div>
+        <div class="sr"><span class="sl">Thickness</span><input type="range" id="i-thickness" min="0.01" max="10" step="0.1" value="2"><span id="v-thickness" class="vb">2.00</span></div>
+      </div>
+    </div>
+
+    <div class="acc-wrap">
+      <div class="acc-hd open" data-acc="surface"><span class="sec">Surface</span><svg class="acc-arr" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"></path></svg></div>
+      <div class="acc-body open" id="acc-surface">
+        <div class="sr"><span class="sl">Metalness</span><input type="range" id="i-metalness" min="0" max="1" step="0.01" value="0.35"><span id="v-metalness" class="vb">0.35</span></div>
+        <div class="sr"><span class="sl">Roughness</span><input type="range" id="i-roughness" min="0" max="1" step="0.01" value="0.45"><span id="v-roughness" class="vb">0.45</span></div>
+        <div class="sr"><span class="sl">Clearcoat</span><input type="range" id="i-clearcoat" min="0" max="1" step="0.01" value="0"><span id="v-clearcoat" class="vb">0.00</span></div>
+        <div class="sr"><span class="sl">Coat Rough</span><input type="range" id="i-clearcoatRoughness" min="0" max="1" step="0.01" value="0"><span id="v-clearcoatRoughness" class="vb">0.00</span></div>
+        <div class="sr"><span class="sl">Sheen</span><input type="range" id="i-sheen" min="0" max="1" step="0.01" value="0"><span id="v-sheen" class="vb">0.00</span></div>
+        <div class="sr"><span class="sl">Sheen Rough</span><input type="range" id="i-sheenRoughness" min="0" max="1" step="0.01" value="0.5"><span id="v-sheenRoughness" class="vb">0.50</span></div>
+      </div>
+    </div>
+
+    <div class="acc-wrap">
+      <div class="acc-hd open" data-acc="irid"><span class="sec">Iridescence</span><svg class="acc-arr" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"></path></svg></div>
+      <div class="acc-body open" id="acc-irid">
+        <div class="sr"><span class="sl">Intensity</span><input type="range" id="i-iridescence" min="0" max="1" step="0.01" value="0"><span id="v-iridescence" class="vb">0.00</span></div>
+        <div class="sr"><span class="sl">IOR</span><input type="range" id="i-iridescenceIOR" min="1.0" max="2.5" step="0.01" value="1.3"><span id="v-iridescenceIOR" class="vb">1.30</span></div>
+        <div class="sr"><span class="sl">Thick Min</span><input type="range" id="i-iridescenceThicknessMin" min="0" max="1000" step="10" value="100"><span id="v-iridescenceThicknessMin" class="vb">100</span></div>
+        <div class="sr"><span class="sl">Thick Max</span><input type="range" id="i-iridescenceThicknessMax" min="0" max="1000" step="10" value="400"><span id="v-iridescenceThicknessMax" class="vb">400</span></div>
+      </div>
+    </div>
+
+    <div class="acc-wrap">
+      <div class="acc-hd open" data-acc="light"><span class="sec">Lighting</span><svg class="acc-arr" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"></path></svg></div>
+      <div class="acc-body open" id="acc-light">
+        <div class="sr"><span class="sl">Env Map</span><input type="range" id="i-envMapIntensity" min="0.5" max="1.0" step="0.02" value="1"><span id="v-envMapIntensity" class="vb">1.00</span></div>
+        <div class="sr"><span class="sl">Specular</span><input type="range" id="i-specularIntensity" min="0" max="2" step="0.01" value="1"><span id="v-specularIntensity" class="vb">1.00</span></div>
+        <div class="sr"><span class="sl">Emissive</span><input type="range" id="i-emissiveIntensity" min="0" max="0.25" step="0.01" value="0"><span id="v-emissiveIntensity" class="vb">0.00</span></div>
+        <div class="xr"><p class="lbl mb-1">Emissive Color</p><input type="color" id="i-emissiveColor" class="w-full h-8 rounded-lg border-none bg-white/20 p-1 cursor-pointer" value="#000000"></div>
+        <div id="scene-lights-ui"></div>
+      </div>
+    </div>
+
+    <div class="acc-wrap">
+      <div class="acc-hd open" data-acc="flow"><span class="sec">Auto Flow</span><svg class="acc-arr" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"></path></svg></div>
+      <div class="acc-body open" id="acc-flow">
+        <div class="cr"><span class="lbl">Auto Cycle</span><input type="checkbox" id="i-autoAdvance" class="w-4 h-4 accent-black cursor-pointer"></div>
+        <div id="ic" class="opacity-50 pointer-events-none">
+          <div class="sr"><span class="sl">Interval (s)</span><input type="range" id="i-interval" min="3" max="60" step="1" value="10"><span id="v-interval" class="vb">10</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2 mt-2 mb-2">
+      <button id="btn-import" class="btn-g px-3 py-3 rounded-xl lbl active:scale-95">Import</button>
+      <button id="btn-export" class="btn-g px-3 py-3 rounded-xl lbl active:scale-95">Export</button>
+      <input type="file" id="file-in" class="hidden" accept=".json">
+    </div>
+    <button id="btn-snap" class="w-full px-4 py-4 bg-black text-white rounded-2xl hover:shadow-xl active:scale-95 mb-3 lbl border border-white/5" style="color:white; letter-spacing: 0.15em;">Capture 4K Wallpaper</button>
+  </div>
+
+  <footer class="px-3 py-3 border-t border-black/5 bg-white/5 grid grid-cols-2 gap-3 shrink-0">
+    <button id="btn-reset" class="px-3 py-3 bg-white/20 border border-white/30 rounded-xl lbl hover:bg-white/35 active:scale-95">Default</button>
+    <button id="btn-randomize" class="px-3 py-3 bg-black text-white rounded-xl lbl hover:shadow-xl active:scale-95" style="color:white">Random</button>
+  </footer>
+</aside>
+
+<div id="info-modal" class="fixed inset-0 z-[110] p-6 items-center justify-center bg-white/20">
+  <div class="gc w-full max-w-md p-10 rounded-[44px] shadow-2xl relative text-center">
+    <button id="modal-close" class="absolute top-6 right-6 p-2 hover:bg-black/5 rounded-full">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+    </button>
+    <h2 class="text-3xl font-black mb-3 tracking-tighter uppercase">Silent Liquidity</h2>
+    <p class="text-black/45 mb-4 font-bold text-sm italic">Physically-simulated fluid distortion.</p>
+    <p class="lbl mb-7">Core formula by <a href="https://gist.github.com/StarKnightt/a8d5c7cb87424e80555bc847cece79b0" target="_blank" class="text-black hover:underline">StarKnightt</a></p>
+    <div class="space-y-3 text-left">
+      <a href="https://arcade.pirillo.com/" target="_blank" class="flex items-center justify-between p-5 rounded-3xl bg-black/5 hover:bg-black/10 lbl"><span>More of My Apps</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+      <a href="https://chris.pirillo.com/" target="_blank" class="flex items-center justify-between p-5 rounded-3xl bg-black/5 hover:bg-black/10 lbl"><span>Follow Chris Pirillo</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+      <a href="https://ctrlaltcreate.live/" target="_blank" class="flex items-center justify-between p-5 rounded-3xl bg-black/5 hover:bg-black/10 lbl"><span>Learn How to Make Apps</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+      <a href="https://www.paypal.com/donate/?hosted_button_id=UMWCDWGVXVHZU" target="_blank" class="flex items-center justify-center gap-2 p-5 bg-blue-600 text-white rounded-[28px] lbl shadow-lg active:scale-95 hover:bg-blue-700" style="color:white">Donate to Me Here</a>
+      <a href="https://patreon.com/ChrisPirillo" target="_blank" class="flex items-center justify-center gap-2 p-5 bg-black text-white rounded-[28px] lbl shadow-lg active:scale-95 hover:bg-zinc-800" style="color:white">Support My Patreon</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// WebGL Context Interception to force preserveDrawingBuffer for snapshots.
+(function(){
+  const canvas = document.getElementById('liquid-canvas');
+  if (!canvas) return;
+  const originalGetContext = canvas.getContext.bind(canvas);
+  canvas.getContext = function(type, options) {
+    if (type === 'webgl' || type === 'webgl2' || type === 'experimental-webgl') {
+      options = Object.assign({}, options || {}, { 
+        preserveDrawingBuffer: true,
+        alpha: true,
+        antialias: true
+      });
+    }
+    return originalGetContext(type, options);
+  };
+})();
+
+// Suppress Three.js serialization warnings
+(function(){
+  const _warn = console.warn.bind(console);
+  console.warn = function(...args) {
+    if (typeof args[0] === 'string' && args[0].includes('Unable to serialize Texture')) return;
+    _warn(...args);
+  };
+})();
+</script>
+
+<script type="module">
+import LiquidBackground from 'https://cdn.jsdelivr.net/npm/threejs-components@0.0.30/build/backgrounds/liquid1.min.js';
+
+const DEFAULTS = {
+  text:["Liquid","Effect"], backgroundColor:"#fafafa", backgroundColor2:"#cbd5e1",
+  gradientEnabled:true, gradientAngle:135, textColor:"#1d1d1f",
+  displacementScale:2.0, viscosity:0.5, speed:1.0,
+  refraction:0.5, chromaticAberration:0.05, fresnelPower:2.0,
+  metalness:0.35, roughness:0.45, thickness:2.0, ior:1.33, transmission:0.0,
+  clearcoat:0.0, clearcoatRoughness:0.0, sheen:0.0, sheenRoughness:0.5,
+  iridescence:0.0, iridescenceIOR:1.3, iridescenceThicknessMin:100, iridescenceThicknessMax:400,
+  specularIntensity:1.0, emissiveIntensity:0.0, emissiveColor:"#000000",
+  envMapIntensity:1.0, sceneLightIntensity:1.0, sceneLightX:0, sceneLightY:5, sceneLightZ:5,
+  rain:false, autoAdvance:false, interval:10
+};
+
+let state = {...DEFAULTS}, app = null, isRand = false, autoTimer = null, sceneLights = [];
+
+const canvas  = document.getElementById('liquid-canvas');
+const fadeEl  = document.getElementById('fo');
+const loadingUI = document.getElementById('loading-ui');
+const panelEl = document.getElementById('panel');
+
+// ─────────────────────────────────────────────────────────
+//  CORE FUNCTIONS
+// ─────────────────────────────────────────────────────────
+
+function updateBodyColors() {
+  document.body.style.backgroundColor = state.backgroundColor;
+  if (state.gradientEnabled) {
+    document.body.style.background = `linear-gradient(${state.gradientAngle}deg, ${state.backgroundColor}, ${state.backgroundColor2})`;
+  } else {
+    document.body.style.background = state.backgroundColor;
+  }
+}
+
+function buildTex(W=window.innerWidth, H=window.innerHeight, force4K=false){
+  const dpr = force4K ? 1 : Math.min(window.devicePixelRatio || 1, 2);
+  const c = document.createElement('canvas'); 
+  c.width = W * dpr; 
+  c.height = H * dpr;
+  const ctx = c.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  if (state.gradientEnabled) {
+    const a = (state.gradientAngle - 90) * (Math.PI / 180);
+    const cx = Math.cos(a) * W / 2, cy = Math.sin(a) * H / 2;
+    const g = ctx.createLinearGradient(W/2 - cx, H/2 - cy, W/2 + cx, H/2 + cy);
+    g.addColorStop(0, state.backgroundColor); 
+    g.addColorStop(1, state.backgroundColor2); 
+    ctx.fillStyle = g;
+  } else {
+    ctx.fillStyle = state.backgroundColor;
+  }
+  ctx.fillRect(0, 0, W, H);
+
+  const fs = Math.min(W * 0.14, H * 0.22);
+  ctx.font = `900 ${fs}px Inter, -apple-system, sans-serif`;
+  ctx.textBaseline = 'middle'; 
+  ctx.textAlign = 'center'; 
+  ctx.fillStyle = state.textColor;
+
+  const lines = Array.isArray(state.text) ? state.text : state.text.split(',').map(s => s.trim());
+  const lh = fs * 1.05;
+  const sy = H / 2 - (lines.length - 1) * lh / 2;
+  lines.forEach((l, i) => {
+    ctx.fillText(l, W / 2, sy + i * lh);
+  });
+  return c.toDataURL('image/png');
+}
+
+async function commitTex(w, h, force4K) {
+  if (!app) return;
+  try {
+    const data = buildTex(w, h, force4K);
+    await app.loadImage(data);
+  } catch(e) { console.warn("Tex commit error", e); }
+}
+
+function applyUniforms() {
+  if (!app) return;
+  const mat = app.liquidPlane?.material;
+  const unis = app.liquidPlane?.uniforms;
+  
+  if (mat) {
+    const s = (k, v) => { if(k in mat) mat[k] = v; };
+    s('metalness', state.metalness); s('roughness', state.roughness);
+    s('ior', state.ior); s('thickness', state.thickness); s('transmission', state.transmission);
+    s('clearcoat', state.clearcoat); s('clearcoatRoughness', state.clearcoatRoughness);
+    s('sheen', state.sheen); s('sheenRoughness', state.sheenRoughness);
+    s('iridescence', state.iridescence); s('iridescenceIOR', state.iridescenceIOR);
+    if('iridescenceThicknessRange' in mat) mat.iridescenceThicknessRange = [state.iridescenceThicknessMin, state.iridescenceThicknessMax];
+    s('envMapIntensity', Math.max(0.5, Math.min(1.0, state.envMapIntensity)));
+    s('emissiveIntensity', Math.min(0.25, state.emissiveIntensity));
+    s('specularIntensity', state.specularIntensity);
+    if (mat.emissive) {
+      const hex = state.emissiveColor.replace('#','');
+      mat.emissive.setRGB(parseInt(hex.slice(0,2),16)/255, parseInt(hex.slice(2,4),16)/255, parseInt(hex.slice(4,6),16)/255);
+    }
+  }
+
+  if (unis) {
+    const set = (v, ...ks) => { for(const k of ks) if(unis[k]) unis[k].value = v; };
+    set(state.displacementScale, 'displacementScale', 'uAmplitude', 'uDisplacementScale');
+    set(state.viscosity, 'frequency', 'uFrequency', 'uViscosity');
+    set(state.speed, 'speed', 'uSpeed', 'uFlowSpeed');
+    set(state.refraction, 'refraction', 'uRefraction');
+    set(state.chromaticAberration, 'chromaticAberration', 'uAberration');
+    set(state.fresnelPower, 'fresnelPower', 'uFresnelPower');
+  }
+
+  sceneLights.forEach(l => {
+    l.intensity = state.sceneLightIntensity;
+    if (l.position) l.position.set(state.sceneLightX, state.sceneLightY, state.sceneLightZ);
+  });
+
+  if (typeof app.setRain === 'function') app.setRain(state.rain);
+}
+
+// ─────────────────────────────────────────────────────────
+//  PANEL & UI
+// ─────────────────────────────────────────────────────────
+
+function openPanel()  { panelEl.classList.add('open'); canvas.classList.add('blocked'); }
+function closePanel() { panelEl.classList.remove('open'); canvas.classList.remove('blocked'); }
+const isPanelOpen = () => panelEl.classList.contains('open');
+
+function syncUI() {
+  const s = state;
+  const val = (id, v) => { const e = document.getElementById(id); if(e) e.value = v; };
+  val('i-text', Array.isArray(s.text) ? s.text.join(', ') : s.text);
+  val('i-backgroundColor', s.backgroundColor);
+  val('i-backgroundColor2', s.backgroundColor2);
+  val('i-textColor', s.textColor);
+  val('i-emissiveColor', s.emissiveColor);
+  
+  const chk = (id, b) => { const e = document.getElementById(id); if(e) e.checked = b; };
+  chk('i-gradientEnabled', s.gradientEnabled);
+  chk('i-rain', s.rain);
+  chk('i-autoAdvance', s.autoAdvance);
+
+  document.getElementById('gc-b').style.display = s.gradientEnabled ? 'block' : 'none';
+  document.getElementById('gc-angle').style.display = s.gradientEnabled ? 'flex' : 'none';
+  const ic = document.getElementById('ic');
+  if(ic) {
+    ic.style.opacity = s.autoAdvance ? '1' : '0.5';
+    ic.style.pointerEvents = s.autoAdvance ? 'auto' : 'none';
+  }
+
+  ['gradientAngle','displacementScale','viscosity','speed','refraction','chromaticAberration','fresnelPower',
+   'ior','transmission','thickness','metalness','roughness','clearcoat','clearcoatRoughness','sheen','sheenRoughness',
+   'iridescence','iridescenceIOR','iridescenceThicknessMin','iridescenceThicknessMax',
+   'envMapIntensity','emissiveIntensity','specularIntensity','interval',
+   'sceneLightIntensity','sceneLightX','sceneLightY','sceneLightZ'
+  ].forEach(k => {
+    const el = document.getElementById('i-'+k), vl = document.getElementById('v-'+k);
+    if (el) el.value = s[k];
+    if (vl) {
+      if (k.includes('Angle')) vl.textContent = Math.round(s[k])+'°';
+      else if (['sceneLightX','sceneLightY','sceneLightZ'].includes(k)) vl.textContent = Number(s[k]).toFixed(1);
+      else if (k.includes('ThicknessM')) vl.textContent = Math.round(s[k]);
+      else vl.textContent = Number(s[k]).toFixed(2);
+    }
+  });
+}
+
+function buildLightUI() {
+  const c = document.getElementById('scene-lights-ui');
+  if (!c || !sceneLights.length) return;
+  c.innerHTML = `
+    <div style="border-top:1px solid rgba(0,0,0,0.08);margin:7px 0 5px"></div>
+    <p class="lbl" style="color:rgba(0,0,0,0.25);margin-bottom:6px">Scene Lights</p>
+    <div class="sr"><span class="sl">Intensity</span><input type="range" id="i-sceneLightIntensity" min="0" max="5" step="0.05" value="${state.sceneLightIntensity}"><span id="v-sceneLightIntensity" class="vb">${state.sceneLightIntensity.toFixed(2)}</span></div>
+    <div class="sr"><span class="sl">Light X</span><input type="range" id="i-sceneLightX" min="-20" max="20" step="0.5" value="${state.sceneLightX}"><span id="v-sceneLightX" class="vb">${state.sceneLightX.toFixed(1)}</span></div>
+    <div class="sr"><span class="sl">Light Y</span><input type="range" id="i-sceneLightY" min="-20" max="20" step="0.5" value="${state.sceneLightY}"><span id="v-sceneLightY" class="vb">${state.sceneLightY.toFixed(1)}</span></div>
+    <div class="sr"><span class="sl">Light Z</span><input type="range" id="i-sceneLightZ" min="-20" max="20" step="0.5" value="${state.sceneLightZ}"><span id="v-sceneLightZ" class="vb">${state.sceneLightZ.toFixed(1)}</span></div>
+  `;
+  const b = (id, k) => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.oninput = e => {
+      state[k] = parseFloat(e.target.value);
+      const vl = document.getElementById('v-'+k);
+      if(vl) vl.textContent = Number(state[k]).toFixed(k.includes('Intensity') ? 2 : 1);
+      applyUniforms();
+    };
+  };
+  b('i-sceneLightIntensity','sceneLightIntensity');
+  b('i-sceneLightX','sceneLightX'); b('i-sceneLightY','sceneLightY'); b('i-sceneLightZ','sceneLightZ');
+}
+
+// ─────────────────────────────────────────────────────────
+//  SNAPSHOT & EVENTS
+// ─────────────────────────────────────────────────────────
+
+async function takeSnapshot() {
+  if (!app) return;
+  console.log("[Snapshot] Starting sequence...");
+  
+  const snapBtn = document.getElementById('btn-snap');
+  const originalBtnText = snapBtn.textContent;
+
+  // Hunt for core components in app.three based on verified logs
+  let renderer = app.renderer, camera = app.camera, scene = app.scene;
+  if (!renderer || !camera || !scene) {
+      const t = app.three || app.context || app.internal;
+      if (t) {
+          renderer = t.renderer || t.gl;
+          camera = t.camera;
+          scene = t.scene;
+      }
+  }
+
+  if (!renderer || !camera || !scene) {
+    console.error("[Snapshot] DISCOVERY FAILED. Inspect app:", app);
+    snapBtn.textContent = "CORE ERROR";
+    setTimeout(() => snapBtn.textContent = originalBtnText, 2000);
+    return;
+  }
+  
+  const originalWidth = window.innerWidth;
+  const originalHeight = window.innerHeight;
+  const originalAspect = camera.aspect;
+  const originalPixelRatio = renderer.getPixelRatio ? renderer.getPixelRatio() : 1;
+  const plane = app.liquidPlane;
+  const originalPlaneScale = plane ? {x: plane.scale.x, y: plane.scale.y} : null;
+
+  try {
+    snapBtn.textContent = "STABILIZING...";
+    snapBtn.disabled = true;
+
+    const targetW = 3840;
+    const targetH = 2160;
+    const targetAspect = 16 / 9; // Hard-coded 4K standard aspect
+
+    console.log("[Snapshot] Step 1: Prep 4K texture");
+    await commitTex(targetW, targetH, true);
+
+    console.log("[Snapshot] Step 2: Virtual view scaling");
+    // Expand DRAWING BUFFER ONLY. 
+    // Passing false prevents the renderer from applying hard-coded pixel widths to the canvas element.
+    // This stops the "squish/jump" experience on your screen.
+    renderer.setPixelRatio(1);
+    renderer.setSize(targetW, targetH, false);
+    
+    // Lock Camera to true 16:9
+    camera.aspect = targetAspect;
+    camera.updateProjectionMatrix();
+
+    // Recalculate mesh scale for 16:9 frame to eliminate black bars
+    if (plane) {
+        const fovRad = (camera.fov * Math.PI) / 180;
+        const dist = camera.position.z || 10;
+        const h = 2 * Math.tan(fovRad / 2) * dist;
+        const w = h * targetAspect;
+        plane.scale.set(w, h, 1);
+        console.log(`[Snapshot] Mesh rescaled to: ${w} x ${h}`);
+    }
+    
+    applyUniforms();
+
+    console.log("[Snapshot] Step 3: Render & Capture");
+    renderer.render(scene, camera);
+
+    await new Promise((resolve, reject) => {
+        canvas.toBlob((blob) => {
+            if (blob) {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a'); 
+                link.download = `SilentLiquidity_Wallpaper_4K_${Date.now()}.png`; 
+                link.href = url;
+                link.click();
+                setTimeout(() => URL.revokeObjectURL(url), 2000);
+                resolve();
+            } else { reject(new Error("toBlob fail")); }
+        }, 'image/png', 1.0);
+    });
+    
+  } catch(err) { 
+    console.error("[Snapshot] ERROR:", err);
+  } finally {
+    console.log("[Snapshot] Restoration...");
+    
+    // Reset internal buffer
+    renderer.setPixelRatio(originalPixelRatio);
+    renderer.setSize(originalWidth, originalHeight, false);
+    
+    // Reset Camera
+    camera.aspect = originalAspect;
+    camera.updateProjectionMatrix();
+
+    // Reset Mesh
+    if (plane && originalPlaneScale) {
+        plane.scale.set(originalPlaneScale.x, originalPlaneScale.y, 1);
+    }
+    
+    // Reset Texture
+    await commitTex();
+    applyUniforms();
+    
+    // Forced re-render to clear any visual cache
+    renderer.render(scene, camera);
+    
+    snapBtn.textContent = originalBtnText;
+    snapBtn.disabled = false;
+  }
+}
+
+function randomSettings() {
+  const BG = ["#fafafa","#f0f4ff","#fff0f5","#f0fff4","#f5f0ff","#fffbeb","#000000","#0f172a","#1e1b4b","#4338ca","#7c3aed","#ec4899","#0f766e","#3b82f6","#f43f5e","#06b6d4","#10b981","#84cc16","#f97316"];
+  const EM = ["#000000","#ff0033","#00ffcc","#ffaa00","#6600ff","#00ccff","#ffffff"];
+  const PH = [["Silent","Liquidity"],["Flow","State"],["Deep","Wave"],["Digital","Void"],["Dark","Matter"],["Pure","Form"],["Liquid","Glass"],["Static","Ocean"]];
+  
+  const b1 = BG[BG.length*Math.random()|0];
+  let b2 = BG[BG.length*Math.random()|0];
+  while(b2 === b1) b2 = BG[BG.length*Math.random()|0];
+
+  const avgLum = (getLum(b1) + getLum(b2)) / 2;
+  let tc = BG[BG.length*Math.random()|0];
+  if (Math.abs(getLum(tc) - avgLum) < 0.4) tc = avgLum > 0.5 ? "#000000" : "#fafafa";
+
+  return {
+    ...DEFAULTS,
+    text: PH[PH.length*Math.random()|0],
+    backgroundColor: b1, backgroundColor2: b2, textColor: tc,
+    gradientEnabled: Math.random() > 0.1,
+    gradientAngle: Math.floor(Math.random()*360),
+    displacementScale: 0.1 + Math.random() * 55,
+    viscosity: 0.01 + Math.random() * 10,
+    speed: 0.1 + Math.random() * 12,
+    refraction: Math.random() * 14,
+    chromaticAberration: Math.random() * 1.2,
+    fresnelPower: 0.1 + Math.random() * 18,
+    ior: 1.0 + Math.random() * 1.4,
+    transmission: Math.random() * 0.6,
+    thickness: 0.1 + Math.random() * 8,
+    metalness: Math.random(),
+    roughness: Math.random(),
+    clearcoat: Math.random() > 0.5 ? Math.random() : 0,
+    clearcoatRoughness: Math.random(),
+    sheen: Math.random() > 0.5 ? Math.random() : 0,
+    sheenRoughness: Math.random(),
+    iridescence: Math.random() > 0.5 ? Math.random() : 0,
+    iridescenceIOR: 1.0 + Math.random() * 1.5,
+    iridescenceThicknessMin: Math.random() * 400,
+    iridescenceThicknessMax: 300 + Math.random() * 600,
+    envMapIntensity: 0.5 + Math.random() * 0.5,
+    emissiveIntensity: Math.random() > 0.7 ? Math.random() * 0.25 : 0,
+    emissiveColor: EM[Math.random() * EM.length | 0],
+    specularIntensity: Math.random() * 1.5,
+    rain: Math.random() > 0.88,
+    sceneLightIntensity: 0.5 + Math.random() * 3,
+    sceneLightX: (Math.random() - 0.5) * 40,
+    sceneLightY: (Math.random() - 0.5) * 40,
+    sceneLightZ: 5 + Math.random() * 10
+  };
+}
+
+function getLum(hex){
+  const rgb = hex.replace('#','').match(/.{2}/g).map(x=>parseInt(x,16)/255).map(v=>v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4));
+  return .2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2];
+}
+
+async function triggerTransition(ns=null) {
+  if (isRand) return; isRand = true;
+  fadeEl.classList.add('active');
+  await new Promise(r => setTimeout(r, 420));
+  if (ns) state = {...state, ...ns};
+  updateBodyColors();
+  await commitTex(); 
+  applyUniforms(); 
+  syncUI();
+  fadeEl.classList.remove('active');
+  isRand = false;
+}
+
+function resetAuto() {
+  clearInterval(autoTimer);
+  if (state.autoAdvance) autoTimer = setInterval(() => triggerTransition(randomSettings()), state.interval*1000);
+}
+
+// ─────────────────────────────────────────────────────────
+//  INITIALIZATION
+// ─────────────────────────────────────────────────────────
+
+async function start() {
+  // SILENCE UI RIPPLES: Prevent propagation from UI elements to simulation
+  ['menu-toggle', 'panel', 'info-modal'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 
+       'touchstart', 'touchmove', 'touchend', 'touchcancel',
+       'mousedown', 'mousemove', 'mouseup', 'click', 'dblclick'
+      ].forEach(evt => {
+        el.addEventListener(evt, e => e.stopPropagation(), { passive: false });
+      });
+    }
+  });
+
+  document.querySelectorAll('.acc-hd').forEach(hd => {
+    hd.onclick = () => {
+      const body = document.getElementById('acc-' + hd.dataset.acc);
+      const isOpen = hd.classList.toggle('open');
+      if (body) body.classList.toggle('open', isOpen);
+    };
+  });
+
+  document.getElementById('menu-toggle').onclick = openPanel;
+  document.getElementById('menu-close').onclick = closePanel;
+  const infoModal = document.getElementById('info-modal');
+  document.getElementById('info-trigger').onclick = () => infoModal.classList.add('active');
+  document.getElementById('modal-close').onclick = () => infoModal.classList.remove('active');
+
+  // Hierarchical Escape Logic
+  window.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      if (infoModal.classList.contains('active')) {
+        infoModal.classList.remove('active');
+      } else if (isPanelOpen()) {
+        closePanel();
+      }
+    }
+  });
+
+  const bindR = (id, k) => {
+    const el = document.getElementById(id); if(!el) return;
+    el.oninput = e => { 
+      state[k] = parseFloat(e.target.value); 
+      const vl = document.getElementById('v-'+k);
+      if(vl) {
+        if(k.includes('Angle')) vl.textContent = Math.round(state[k])+'°';
+        else if(k.includes('ThicknessM')) vl.textContent = Math.round(state[k]);
+        else vl.textContent = Number(state[k]).toFixed(2);
+      }
+      applyUniforms(); 
+    };
+    el.onpointerup = el.ontouchend = () => { if (['gradientAngle'].includes(k)) { updateBodyColors(); commitTex(); } };
+  };
+  ['gradientAngle','displacementScale','viscosity','speed','refraction','chromaticAberration','fresnelPower','ior','transmission','thickness','metalness','roughness','clearcoat','clearcoatRoughness','sheen','sheenRoughness','iridescence','iridescenceIOR','iridescenceThicknessMin','iridescenceThicknessMax','envMapIntensity','emissiveIntensity','specularIntensity'].forEach(k => bindR('i-'+k, k));
+
+  document.getElementById('i-backgroundColor').onchange = e => { state.backgroundColor = e.target.value; updateBodyColors(); commitTex(); };
+  document.getElementById('i-backgroundColor2').onchange = e => { state.backgroundColor2 = e.target.value; updateBodyColors(); commitTex(); };
+  document.getElementById('i-textColor').onchange = e => { state.textColor = e.target.value; commitTex(); };
+  document.getElementById('i-emissiveColor').onchange = e => { state.emissiveColor = e.target.value; applyUniforms(); };
+  document.getElementById('i-gradientEnabled').onchange = e => { state.gradientEnabled = e.target.checked; syncUI(); updateBodyColors(); commitTex(); };
+  document.getElementById('i-rain').onchange = e => { state.rain = e.target.checked; applyUniforms(); };
+  document.getElementById('i-autoAdvance').onchange = e => { state.autoAdvance = e.target.checked; syncUI(); resetAuto(); };
+  document.getElementById('i-interval').oninput = e => { state.interval = parseInt(e.target.value); syncUI(); resetAuto(); };
+
+  let tT = null;
+  document.getElementById('i-text').oninput = e => {
+    state.text = e.target.value.split(',').map(s => s.trim());
+    clearTimeout(tT); tT = setTimeout(commitTex, 400);
+  };
+
+  document.getElementById('btn-randomize').onclick = () => triggerTransition(randomSettings());
+  document.getElementById('btn-reset').onclick = () => triggerTransition({...DEFAULTS});
+  document.getElementById('btn-snap').onclick = takeSnapshot;
+  document.getElementById('btn-export').onclick = () => {
+    const b = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `SilentLiquidity_${Date.now()}.json`; a.click();
+  };
+  document.getElementById('btn-import').onclick = () => document.getElementById('file-in').click();
+  document.getElementById('file-in').onchange = e => {
+    const f = e.target.files[0]; if(!f) return;
+    const r = new FileReader(); r.onload = ev => { try{ triggerTransition(JSON.parse(ev.target.result)); }catch(e){} }; r.readAsText(f);
+  };
+
+  let cst = 0;
+  canvas.onpointerdown = (e) => { if(!isPanelOpen() && e.pointerType !== 'touch') cst = Date.now(); };
+  canvas.onpointerup = (e) => { if(!isPanelOpen() && e.pointerType !== 'touch' && Date.now()-cst < 300) triggerTransition(randomSettings()); };
+
+  try {
+    app = LiquidBackground(canvas);
+    await new Promise(r => setTimeout(r, 1000));
+    sceneLights = [];
+    app.scene?.traverse(o => { if (o.isLight) sceneLights.push(o); });
+    updateBodyColors();
+    await commitTex();
+    applyUniforms();
+    buildLightUI();
+    syncUI();
+    requestAnimationFrame(async () => {
+      await commitTex();
+      if (loadingUI) loadingUI.remove(); 
+      fadeEl.style.transition = 'opacity 0.4s ease-out';
+      fadeEl.classList.remove('active');
+      setTimeout(() => { fadeEl.style.transition = ''; }, 500);
+    });
+  } catch(e) { 
+    console.error("Liquid start fail", e); 
+    fadeEl.classList.remove('active');
+  }
+}
+
+window.addEventListener('load', () => {
+  state = {...DEFAULTS, ...randomSettings()};
+  updateBodyColors();
+  start();
+});
+
+window.addEventListener('resize', () => { if(app) commitTex(); });
+</script>
+
+</body></html>
